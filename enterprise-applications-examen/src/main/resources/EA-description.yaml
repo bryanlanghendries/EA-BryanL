@@ -4,7 +4,7 @@ info:
   description: This API is designed for an online aquarium store. It provides functionalities to browse a catalog, manage a shopping cart, and process orders.
   version: 1.0.0
 servers:
-  - url: http://localhost:8080/api
+  - url: "http://localhost:8080/api"
 paths:
   /products:
     get:
