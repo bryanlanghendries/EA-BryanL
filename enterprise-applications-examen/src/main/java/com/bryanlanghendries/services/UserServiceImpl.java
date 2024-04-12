@@ -1,5 +1,6 @@
 package com.bryanlanghendries.services;
 
+import com.bryanlanghendries.exceptions.EntityNotFoundException;
 import com.bryanlanghendries.repository.database.DbUserEntityRepository;
 import com.bryanlanghendries.repository.entities.UserEntity;
 import com.bryanlanghendries.services.mappers.UserMapper;
@@ -32,7 +33,13 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
+    public UserEntity getByIdOrThrowError(int id) throws EntityNotFoundException {
+        return userRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException(UserEntity.class, String.valueOf(id)));
+    }
+
+    @Override
     public UserDB getById(int id) {
-        return mapper.toUserDto(userRepository.findById(id).get());
+        return mapper.toUserDto(getByIdOrThrowError(id));
     }
 }
