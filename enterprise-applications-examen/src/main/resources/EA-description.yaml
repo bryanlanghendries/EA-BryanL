@@ -252,18 +252,22 @@ components:
       properties:
         firstName:
           type: string
+          maxLength: 50
         lastName:
           type: string
+          maxLength: 50
         email:
           type: string
           format: email
+          minLength: 3
+          maxLength: 255
         password:
           type: string
           format: password
           minLength: 6
           maxLength: 128
           pattern: '^(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).+$'
-        is_admin:
+        isAdmin:
           type: boolean
           default: false
       required:
