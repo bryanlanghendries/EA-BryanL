@@ -29,7 +29,7 @@ public class UserControllerImpl implements UsersApi {
 
     @Override
     public ResponseEntity<UserDB> getUserById(Integer id) {
-        return UsersApi.super.getUserById(id);
+        return ResponseEntity.ok(userService.getById(id));
     }
 
     @Override
