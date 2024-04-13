@@ -153,13 +153,16 @@ paths:
           schema:
             type: integer
             format: int32
+      requestBody:
+        description: A User object as input
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserInput'
       responses:
         '200':
           description: A user
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/UserInput'
         '204':
           description: The user is not found with ID
         '400':
@@ -179,11 +182,7 @@ paths:
             format: int32
       responses:
         '200':
-          description: A user
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/UserInput'
+          description: User has been deleted
         '204':
           description: The user is not found with ID
   /users:

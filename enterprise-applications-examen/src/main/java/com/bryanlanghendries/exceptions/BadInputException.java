@@ -12,6 +12,11 @@ public class BadInputException extends RuntimeException{
         this.identifier = identifier;
     }
 
+    public BadInputException(Class<?> clazz){
+        this.clazz = clazz;
+        this.identifier = "no identifier";
+    }
+
     @Override
     public String getMessage() {
         final String humanFriendlyName = StringUtils.capitalize(

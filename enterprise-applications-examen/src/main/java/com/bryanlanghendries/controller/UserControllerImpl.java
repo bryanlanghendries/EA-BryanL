@@ -23,8 +23,10 @@ public class UserControllerImpl implements UsersApi {
     }
 
     @Override
-    public ResponseEntity<UserInput> deleteUserById(Integer id) {
-        return UsersApi.super.deleteUserById(id);
+    public ResponseEntity<Void> deleteUserById(Integer id) {
+        userService.deleteUser(id);
+        return ResponseEntity.ok().build();
+
     }
 
     @Override
@@ -33,7 +35,8 @@ public class UserControllerImpl implements UsersApi {
     }
 
     @Override
-    public ResponseEntity<UserInput> updateUserById(Integer id) {
-        return UsersApi.super.updateUserById(id);
+    public ResponseEntity<Void> updateUserById(Integer id, UserInput userInput) {
+        userService.updateUser(userInput, id);
+        return ResponseEntity.ok().build();
     }
 }

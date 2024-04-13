@@ -1,5 +1,6 @@
 package com.bryanlanghendries.services;
 
+import com.bryanlanghendries.exceptions.BadInputException;
 import com.bryanlanghendries.exceptions.EntityNotFoundException;
 import com.bryanlanghendries.repository.database.DbUserEntityRepository;
 import com.bryanlanghendries.repository.entities.UserEntity;
@@ -21,16 +22,42 @@ public class UserServiceImpl implements UserService{
         this.mapper = mapper;
     }
     @Override
-    public void addUser(UserInput userInput) {
-        UserEntity user = new UserEntity(
-                userInput.getFirstName(),
-                userInput.getLastName(),
-                userInput.getEmail(),
-                userInput.getPassword(),
-                userInput.getIsAdmin()
-        );
-        userRepository.save(user);
+    public void addUser(UserInput userInput) throws BadInputException {
+        try {
+            UserEntity user = new UserEntity(
+                    userInput.getFirstName(),
+                    userInput.getLastName(),
+                    userInput.getEmail(),
+                    userInput.getPassword(),
+                    userInput.getIsAdmin()
+            );
+            userRepository.save(user);
+
+        } catch (RuntimeException ex) {
+            throw new BadInputException(UserEntity.class);
+        }
+
     }
+
+    @Override
+    public void updateUser(UserInput userInput, int id) throws BadInputException {
+        UserEntity user = getByIdOrThrowError(id);
+
+        try {
+            user.setFirstName(userInput.getFirstName());
+            user.setLastName(userInput.getLastName());
+            user.setEmail(userInput.getEmail());
+            user.setPassword(userInput.getPassword());
+            user.setAdmin(userInput.getIsAdmin());
+            userRepository.save(user);
+
+        } catch (RuntimeException ex) {
+            throw new BadInputException(UserEntity.class, String.valueOf(id));
+        }
+    }
+
+    @Override
+    public void deleteUser(int id) { userRepository.delete(getByIdOrThrowError(id)); }
 
     @Override
     public UserEntity getByIdOrThrowError(int id) throws EntityNotFoundException {

@@ -10,6 +10,9 @@ import java.util.Optional;
 public interface UserService {
     void addUser(UserInput userInput);
 
+    void updateUser(UserInput userInput, int id);
+
+    void deleteUser(int id);
     UserDB getById(int id);
 
     UserEntity getByIdOrThrowError(int id) throws EntityNotFoundException;
