@@ -82,13 +82,16 @@ paths:
           schema:
             type: integer
             format: int32
+      requestBody:
+        description: A Product object as input
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProductInput'
       responses:
         '200':
           description: A product
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ProductInput'
         '204':
           description: The product is not found with ID
         '400':
@@ -109,10 +112,6 @@ paths:
       responses:
         '200':
           description: A product
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ProductInput'
         '204':
           description: The product is not found with ID
 
@@ -243,7 +242,9 @@ components:
       required:
         - id
         - name
+        - category
         - price
+        - description
 
     # All user related content
     UserInput:
