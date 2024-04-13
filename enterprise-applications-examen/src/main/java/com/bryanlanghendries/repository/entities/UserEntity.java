@@ -42,7 +42,7 @@ public class UserEntity {
     @Column(name = "is_admin", columnDefinition = "boolean default false")
     private boolean isAdmin;
 
-    public UserEntity(String firstName, String lastName, String email, String password, Boolean isAdmin) {
+    public UserEntity(@NonNull String firstName, @NonNull String lastName, @NonNull String email, @NonNull String password, Boolean isAdmin) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
