@@ -4,15 +4,16 @@ import { Container, Grid, Typography, TextField, MenuItem, FormControl, InputLab
 import ProductCard from "../components/ProductCard";
 import { useCart } from "../context/CartContext";
 
-const CATEGORIES = [
-    'ALL', 'Food', 'Decor', 'Habitat', 'Animal'
-];
+const CATEGORIES = {
+    Food : 'Food',
+    Decor : 'Decor',
+    Habitat : 'Habitat',
+    Animal : 'Animal',
+}
 
 const Catalog = () => {
     const [products, setProducts] = useState([]);
-    const [filteredProducts, setFilteredProducts] = useState([]);
-    const [searchTerm, setSearchTerm] = useState('');
-    const [selectedCategory, setSelectedCategory] = useState('ALL');
+    const [selectedCategory, setSelectedCategory] = useState(CATEGORIES.Food);
 
     const { addToCart } = useCart();
 
@@ -23,33 +24,14 @@ const Catalog = () => {
     useEffect(() => {
         const fetchProducts = async () => {
             try {
-                const response = await axios.get('http://localhost:8080/api/products');
+                const response = await axios.get(`http://localhost:8080/api/products?category=${selectedCategory}`);
                 setProducts(response.data);
-                setFilteredProducts(response.data);
             } catch (error) {
                 console.error('Error fetching products:', error);
             }
         };
-
         fetchProducts();
-    }, []);
-
-    useEffect(() => {
-        let updatedProducts = products;
-
-        if (searchTerm) {
-            updatedProducts = updatedProducts.filter(product =>
-                product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                product.description.toLowerCase().includes(searchTerm.toLowerCase())
-            );
-        }
-
-        if (selectedCategory && selectedCategory !== 'ALL') {
-            updatedProducts = updatedProducts.filter(product => product.category === selectedCategory);
-        }
-
-        setFilteredProducts(updatedProducts);
-    }, [searchTerm, selectedCategory, products]);
+    }, [selectedCategory]);
 
     return (
         <Container>
@@ -58,13 +40,6 @@ const Catalog = () => {
             </Typography>
 
             <Box display="flex" flexDirection="row" justifyContent="space-between" alignItems="flex-start" mb={2}>
-                <TextField
-                    label="Search"
-                    variant="outlined"
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                    style={{ marginBottom: '1rem' }}
-                />
 
                 <FormControl variant="outlined" style={{ minWidth: 200, marginBottom: '1rem' }}>
                     <InputLabel>Category</InputLabel>
@@ -73,18 +48,26 @@ const Catalog = () => {
                         onChange={(e) => setSelectedCategory(e.target.value)}
                         label="Category"
                     >
-                        {CATEGORIES.map((category) => (
-                            <MenuItem key={category} value={category}>
-                                {category}
-                            </MenuItem>
-                        ))}
+                        <MenuItem key={CATEGORIES.Food} value={CATEGORIES.Food}>
+                            {CATEGORIES.Food}
+                        </MenuItem>
+                        <MenuItem key={CATEGORIES.Decor} value={CATEGORIES.Decor}>
+                            {CATEGORIES.Decor}
+                        </MenuItem>
+                        <MenuItem key={CATEGORIES.Habitat} value={CATEGORIES.Habitat}>
+                            {CATEGORIES.Habitat}
+                        </MenuItem>
+                        <MenuItem key={CATEGORIES.Animal} value={CATEGORIES.Animal}>
+                            {CATEGORIES.Animal}
+                        </MenuItem>
+
                     </Select>
                 </FormControl>
             </Box>
 
             <Grid container spacing={3}>
-                {filteredProducts.length > 0 ? (
-                    filteredProducts.map((product) => (
+                {products.length > 0 ? (
+                    products.map((product) => (
                         <Grid item xs={12} sm={6} md={4} key={product.id}>
                             <ProductCard product={product} onAddToCart={handleAddToCart} />
                         </Grid>
