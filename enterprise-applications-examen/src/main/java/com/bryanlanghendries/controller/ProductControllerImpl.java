@@ -2,7 +2,7 @@ package com.bryanlanghendries.controller;
 
 import com.bryanlanghendries.services.ProductServiceImpl;
 import org.openapitools.api.ProductsApi;
-import org.openapitools.model.ProductDB;
+import org.openapitools.model.ProductDto;
 import org.openapitools.model.ProductInput;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -33,19 +33,19 @@ public class ProductControllerImpl implements ProductsApi {
     }
 
     @Override
-    public ResponseEntity<List<ProductDB>> getAllProducts(String category) {
+    public ResponseEntity<List<ProductDto>> getAllProducts(String category) {
 
-       return ResponseEntity.ok(productService.getAllProducts());
+       return ResponseEntity.ok(productService.getAllProducts(category));
     }
 
     @Override
-    public ResponseEntity<ProductDB> getProductById(Integer id) {
+    public ResponseEntity<ProductDto> getProductById(Integer id) {
         return ResponseEntity.ok(productService.getById(id));
     }
 
     @Override
-    public ResponseEntity<Void> updateProductById(Integer id, ProductInput productInput) {
-        productService.updateProduct(productInput, id);
+    public ResponseEntity<Void> updateProductById(Integer id, ProductDto product) {
+        productService.updateProduct(product, id);
         return ResponseEntity.ok().build();
     }
 }

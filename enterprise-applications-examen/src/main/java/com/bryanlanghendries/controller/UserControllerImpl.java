@@ -2,7 +2,7 @@ package com.bryanlanghendries.controller;
 
 import com.bryanlanghendries.services.UserServiceImpl;
 import org.openapitools.api.UsersApi;
-import org.openapitools.model.UserDB;
+import org.openapitools.model.UserDto;
 import org.openapitools.model.UserInput;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -30,13 +30,13 @@ public class UserControllerImpl implements UsersApi {
     }
 
     @Override
-    public ResponseEntity<UserDB> getUserById(Integer id) {
+    public ResponseEntity<UserDto> getUserById(Integer id) {
         return ResponseEntity.ok(userService.getById(id));
     }
 
     @Override
-    public ResponseEntity<Void> updateUserById(Integer id, UserInput userInput) {
-        userService.updateUser(userInput, id);
+    public ResponseEntity<Void> updateUserById(Integer id, UserDto user) {
+        userService.updateUser(user, id);
         return ResponseEntity.ok().build();
     }
 }

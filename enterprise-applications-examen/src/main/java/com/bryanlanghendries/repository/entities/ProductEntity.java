@@ -6,7 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
-import org.openapitools.model.ProductDB;
+import org.openapitools.model.ProductDto;
 
 import javax.validation.constraints.Size;
 

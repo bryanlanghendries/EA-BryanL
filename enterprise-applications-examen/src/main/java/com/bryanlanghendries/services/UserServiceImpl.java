@@ -5,12 +5,10 @@ import com.bryanlanghendries.exceptions.EntityNotFoundException;
 import com.bryanlanghendries.repository.database.DbUserEntityRepository;
 import com.bryanlanghendries.repository.entities.UserEntity;
 import com.bryanlanghendries.services.mappers.UserMapper;
-import org.openapitools.model.UserDB;
+import org.openapitools.model.UserDto;
 import org.openapitools.model.UserInput;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.Optional;
 
 @Service
 public class UserServiceImpl implements UserService{
@@ -40,20 +38,9 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
-    public void updateUser(UserInput userInput, int id) throws BadInputException {
-        UserEntity user = getByIdOrThrowError(id);
-
-        try {
-            user.setFirstName(userInput.getFirstName());
-            user.setLastName(userInput.getLastName());
-            user.setEmail(userInput.getEmail());
-            user.setPassword(userInput.getPassword());
-            user.setAdmin(userInput.getIsAdmin());
-            userRepository.save(user);
-
-        } catch (RuntimeException ex) {
-            throw new BadInputException(UserEntity.class, String.valueOf(id));
-        }
+    public void updateUser(UserDto user, int id) throws BadInputException {
+        getByIdOrThrowError(id);
+        userRepository.save(mapper.toUserEntity(user));
     }
 
     @Override
@@ -66,7 +53,7 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
-    public UserDB getById(int id) {
+    public UserDto getById(int id) {
         return mapper.toUserDto(getByIdOrThrowError(id));
     }
 }
