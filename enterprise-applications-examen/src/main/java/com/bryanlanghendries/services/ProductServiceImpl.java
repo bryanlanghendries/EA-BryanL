@@ -33,7 +33,8 @@ public class ProductServiceImpl implements ProductService{
         if (category == null) {
             entities = productRepository.findAll();
         } else {
-            entities = productRepository.findByCategory(ProductCategory.valueOf(category));
+            ProductCategory productCategory = ProductCategory.valueOf(category.toUpperCase());
+            entities = productRepository.findByCategory(productCategory);
         }
 
         return entities.stream()

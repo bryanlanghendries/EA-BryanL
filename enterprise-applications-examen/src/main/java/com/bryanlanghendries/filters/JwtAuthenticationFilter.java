@@ -1,46 +1,52 @@
 package com.bryanlanghendries.filters;
 
 import com.bryanlanghendries.configuration.JwtConfig;
+import com.bryanlanghendries.services.UserService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.stereotype.Component;
+import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.util.Collection;
+import java.util.Collections;
 
-public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
+
+@RequiredArgsConstructor
+public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final JwtConfig jwtConfig;
 
-    public JwtAuthenticationFilter(JwtConfig jwtConfig) {
-        this.jwtConfig = jwtConfig;
-    }
-
     @Override
-    public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
-        String email = request.getParameter("email");
-        String password = request.getParameter("password");
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+        String authorizationHeader = request.getHeader("Authorization");
 
-        UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(email, password);
+        if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
+            String token = authorizationHeader.substring(7);
 
-        return this.getAuthenticationManager().authenticate(authToken);
-    }
+            if (!jwtConfig.isTokenExpired(token)) {
+                String email = jwtConfig.extractEmail(token);
+                Collection<? extends GrantedAuthority> authorities = jwtConfig.getAuthoritiesFromToken(token);
 
-    @Override
-    protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authResult) throws IOException, ServletException {
-        String token = jwtConfig.generateToken(authResult.getName());
-        response.setHeader("Authorization", "Bearer " + token);
-        super.successfulAuthentication(request, response, chain, authResult);
-    }
+                if (email != null) {
+                    Authentication auth = new UsernamePasswordAuthenticationToken(email, null, authorities);
+                    SecurityContextHolder.getContext().setAuthentication(auth);
+                }
+            }
+        }
 
-    @Override
-    protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, AuthenticationException failed) throws IOException, ServletException {
-        super.unsuccessfulAuthentication(request, response, failed);
+        filterChain.doFilter(request, response);
     }
 }

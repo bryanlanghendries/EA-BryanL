@@ -19,8 +19,8 @@ import org.springframework.stereotype.Service;
 public class UserServiceImpl implements UserService {
     private final DbUserEntityRepository userRepository;
     private final UserMapper mapper;
-
     private final PasswordEncoder passwordEncoder;
+
     @Autowired
     public UserServiceImpl(DbUserEntityRepository userRepository, UserMapper mapper, PasswordEncoder passwordEncoder){
         this.userRepository = userRepository;
@@ -34,7 +34,7 @@ public class UserServiceImpl implements UserService {
                     userInput.getFirstName(),
                     userInput.getLastName(),
                     userInput.getEmail(),
-                    userInput.getPassword(),
+                    passwordEncoder.encode(userInput.getPassword()),
                     false
             );
             userRepository.save(user);
