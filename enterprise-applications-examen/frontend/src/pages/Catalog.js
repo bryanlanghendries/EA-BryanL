@@ -24,7 +24,9 @@ const Catalog = () => {
     useEffect(() => {
         const fetchProducts = async () => {
             try {
-                const response = await axios.get(`http://localhost:8080/api/products?category=${selectedCategory}`);
+                const token = localStorage.getItem('authToken');
+                const response = await axios.get(`http://localhost:8080/api/products?category=${selectedCategory}`,
+                    { headers: { Authorization: `Bearer ${token}` } });
                 setProducts(response.data);
             } catch (error) {
                 console.error('Error fetching products:', error);
