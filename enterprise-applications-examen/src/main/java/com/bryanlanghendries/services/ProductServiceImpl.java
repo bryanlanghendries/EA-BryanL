@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class ProductServiceImpl implements ProductService{
@@ -27,20 +28,18 @@ public class ProductServiceImpl implements ProductService{
     }
     @Override
     public List<ProductDto> getAllProducts(String category) {
-        return productRepository.findAll().stream()
-                .filter(product -> {
-                    if (category == null) return true;
-                    try {
-                        ProductCategory productCategoryEnum = ProductCategory.valueOf(category.toUpperCase());
-                        return product.getCategory() == productCategoryEnum;
-                    } catch (IllegalArgumentException e) {
-                        return false;
-                    }
-                })
-                .map(mapper::toProductDto)
-                .toList();
-    }
+        List<ProductEntity> entities;
 
+        if (category == null) {
+            entities = productRepository.findAll();
+        } else {
+            entities = productRepository.findByCategory(ProductCategory.valueOf(category));
+        }
+
+        return entities.stream()
+                .map(mapper::toProductDto)
+                .collect(Collectors.toList());
+    }
 
     @Override
     public ProductEntity getByIdOrThrowError(int id) throws EntityNotFoundException {

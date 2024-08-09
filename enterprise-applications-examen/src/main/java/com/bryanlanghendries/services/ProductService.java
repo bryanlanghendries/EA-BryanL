@@ -1,5 +1,6 @@
 package com.bryanlanghendries.services;
 
+import com.bryanlanghendries.enums.ProductCategory;
 import com.bryanlanghendries.exceptions.EntityNotFoundException;
 import com.bryanlanghendries.repository.entities.ProductEntity;
 import org.openapitools.model.ProductDto;

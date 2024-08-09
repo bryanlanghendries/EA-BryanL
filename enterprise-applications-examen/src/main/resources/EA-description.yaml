@@ -1,7 +1,7 @@
 openapi: 3.0.3
 info:
-  title: Aquarium Store - Online Shop API
-  description: This API is designed for an online aquarium store. It provides functionalities to browse a catalog, manage a shopping cart, and process orders.
+  title: Paws & Claws Pet Shop
+  description: This API is designed for an online pet store. It provides functionalities to browse a catalog, manage a shopping cart, and process orders.
   version: 1.0.0
 servers:
   - url: "http://localhost:8080/api"
@@ -18,7 +18,11 @@ paths:
           description: Category to filter products
           schema:
             type: string
-            enum: [Food, Decor, Habitat, Animal]
+            enum:
+              - FOOD
+              - DECOR
+              - HABITAT
+              - ANIMAL
       responses:
         '200':
           description: A list of products
@@ -203,6 +207,49 @@ paths:
         '400':
           description: Invalid JSON input
 
+  /auth:
+    post:
+      tags:
+        - auth
+      operationId: login
+      requestBody:
+        description: A user object as input
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+      responses:
+        '200':
+          description: User has logged in and a JWT token is returned
+          content:
+            application/json:
+              schema:
+                type: string
+        '400':
+          description: Bad request due to invalid input
+        '401':
+          description: Unauthorized due to invalid credentials
+        '404':
+          description: User not found
+
+  /auth/register:
+    post:
+      tags:
+        - auth
+      operationId: register
+      requestBody:
+        description: A user object as input
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserInput'
+      responses:
+        '201':
+          description: User has been created
+        '404':
+          description: User has not been found
 
 components:
   schemas:
@@ -267,9 +314,6 @@ components:
           minLength: 6
           maxLength: 128
           pattern: '^(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).+$'
-        isAdmin:
-          type: boolean
-          default: false
       required:
         - firstName
         - lastName
@@ -303,3 +347,43 @@ components:
         - lastName
         - email
         - password
+
+    AdminInput:
+      type: object
+      properties:
+        firstName:
+          type: string
+          maxLength: 50
+        lastName:
+          type: string
+          maxLength: 50
+        email:
+          type: string
+          format: email
+          minLength: 3
+          maxLength: 255
+        password:
+          type: string
+          format: password
+          minLength: 6
+          maxLength: 128
+          pattern: '^(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).+$'
+        is_admin:
+          type: boolean
+          default: true
+      required:
+        - firstName
+        - lastName
+        - email
+        - password
+        - is_admin
+
+    LoginRequest:
+      type: object
+      properties:
+        email:
+          type: string
+          format: email
+        password:
+          type: string
+          format: password

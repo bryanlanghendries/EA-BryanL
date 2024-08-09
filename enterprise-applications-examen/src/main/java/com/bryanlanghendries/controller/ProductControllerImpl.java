@@ -1,6 +1,7 @@
 package com.bryanlanghendries.controller;
 
-import com.bryanlanghendries.services.ProductServiceImpl;
+import com.bryanlanghendries.enums.ProductCategory;
+import com.bryanlanghendries.services.ProductService;
 import org.openapitools.api.ProductsApi;
 import org.openapitools.model.ProductDto;
 import org.openapitools.model.ProductInput;
@@ -13,10 +14,10 @@ import java.util.List;
 @RestController
 public class ProductControllerImpl implements ProductsApi {
 
-    private final ProductServiceImpl productService;
+    private final ProductService productService;
 
     @Autowired
-    public ProductControllerImpl(ProductServiceImpl productService) {
+    public ProductControllerImpl(ProductService productService) {
         this.productService = productService;
     }
 
