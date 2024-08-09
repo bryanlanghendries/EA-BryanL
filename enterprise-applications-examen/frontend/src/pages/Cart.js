@@ -35,19 +35,18 @@ const Cart = () => {
                 <Grid container spacing={3}>
                     {groupedItemsArray.map((item, index) => (
                         <Grid item xs={12} sm={6} md={4} lg={3} key={index}>
-                            <Card style={{ display: 'flex', flexDirection: 'column', height: '100%', boxShadow: '0px 2px 5px rgba(0, 0, 0, 0.1)' }}>
-                                <CardContent style={{ flexGrow: 1 }}>
-                                    <Typography variant="h5" gutterBottom>{item.name}</Typography>
+                            <Card style={{ display: 'flex', flexDirection: 'column', height: '100%', boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.1)', borderRadius: '8px', position: 'relative', overflow: 'hidden' }}>
+                                <CardContent style={{ padding: '1.5rem', display: 'flex', flexDirection: 'column', flexGrow: 1 }}>
+                                    <Typography variant="h6" gutterBottom>{item.name}</Typography>
                                     <Typography variant="body2" color="textSecondary" paragraph>
                                         Category: {item.category}
                                     </Typography>
                                     <Typography variant="body2" color="textSecondary" paragraph>{item.description}</Typography>
-                                    <Typography variant="h6" color="primary">${item.price.toFixed(2)}</Typography>
-                                    {item.quantity > 1 && (
-                                        <Typography variant="body2" color="textSecondary">
-                                            Quantity: {item.quantity}
-                                        </Typography>
-                                    )}
+                                    <Typography variant="h6" color="primary" style={{ marginTop: 'auto' }}>€{item.price.toFixed(2)}</Typography>
+                                    <Typography variant="body2" color="textSecondary">
+                                        Quantity: {item.quantity}
+                                    </Typography>
+
                                 </CardContent>
                             </Card>
                         </Grid>
@@ -56,12 +55,12 @@ const Cart = () => {
             )}
             <Divider style={{ margin: '2rem 0' }} />
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
-                <Typography variant="h6">Total Price: ${calculateTotalPrice()}</Typography>
+                <Typography variant="h6">Total Price: €{calculateTotalPrice()}</Typography>
                 <div>
-                    <Button variant="outlined" color="error" onClick={clearCart} style={{ marginRight: '1rem' }}>
+                    <Button variant="outlined" color="error" onClick={clearCart} style={{ marginRight: '1rem', borderRadius: '8px', padding: '0.5rem 1.5rem' }}>
                         Clear Cart
                     </Button>
-                    <Button variant="contained" color="primary" onClick={handleCheckout}>
+                    <Button variant="contained" color="primary" onClick={handleCheckout} style={{ borderRadius: '8px', padding: '0.5rem 1.5rem' }}>
                         Checkout
                     </Button>
                 </div>

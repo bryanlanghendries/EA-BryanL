@@ -14,7 +14,7 @@ function ProductCard({ product, onAddToCart }) {
                     {product.description}
                 </Typography>
                 <Typography variant="h6" color="primary" sx={{ marginTop: 1 }}>
-                    ${product.price.toFixed(2)}
+                    €{product.price.toFixed(2)}
                 </Typography>
                 <Box sx={{ display: 'flex', justifyContent: 'flex-end', marginTop: 2 }}>
                     <Button
