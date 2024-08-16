@@ -9,11 +9,12 @@ const CATEGORIES = {
     Decor : 'Decor',
     Habitat : 'Habitat',
     Animal : 'Animal',
+    All : 'All'
 }
 
 const Catalog = () => {
     const [products, setProducts] = useState([]);
-    const [selectedCategory, setSelectedCategory] = useState(CATEGORIES.Food);
+    const [selectedCategory, setSelectedCategory] = useState(CATEGORIES.All);
 
     const { addToCart } = useCart();
 
@@ -25,13 +26,22 @@ const Catalog = () => {
         const fetchProducts = async () => {
             try {
                 const token = localStorage.getItem('authToken');
-                const response = await axios.get(`http://localhost:8080/api/products?category=${selectedCategory}`,
-                    { headers: { Authorization: `Bearer ${token}` } });
+                let url = 'http://localhost:8080/api/products';
+
+                // Check if the selectedCategory is 'all'
+                if (selectedCategory && selectedCategory !== CATEGORIES.All) {
+                    url += `?category=${selectedCategory}`;
+                }
+
+                const response = await axios.get(url, {
+                    headers: { Authorization: `Bearer ${token}` },
+                });
                 setProducts(response.data);
             } catch (error) {
                 console.error('Error fetching products:', error);
             }
         };
+
         fetchProducts();
     }, [selectedCategory]);
 
@@ -50,6 +60,9 @@ const Catalog = () => {
                         onChange={(e) => setSelectedCategory(e.target.value)}
                         label="Category"
                     >
+                        <MenuItem key={CATEGORIES.All} value={CATEGORIES.All}>
+                            {CATEGORIES.All}
+                        </MenuItem>
                         <MenuItem key={CATEGORIES.Food} value={CATEGORIES.Food}>
                             {CATEGORIES.Food}
                         </MenuItem>
