@@ -16,6 +16,7 @@ public class AdminConfig {
         createAdmin();
     }
 
+    // Create an admin user if one does not exist
     public void createAdmin() {
         AdminInput admin = new AdminInput(
                 "admin",

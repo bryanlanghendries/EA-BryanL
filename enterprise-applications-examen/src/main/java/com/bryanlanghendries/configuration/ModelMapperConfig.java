@@ -9,6 +9,7 @@ import org.springframework.context.annotation.Configuration;
 public class ModelMapperConfig {
     private ModelMapper modelMapper;
 
+    // ModelMapper is a library that maps objects to other objects
     @Bean
     public ModelMapper modelMapper(){
         if (modelMapper == null){

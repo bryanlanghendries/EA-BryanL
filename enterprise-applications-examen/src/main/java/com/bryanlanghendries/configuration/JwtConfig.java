@@ -18,6 +18,7 @@ import java.util.stream.Collectors;
 @Service
 public class JwtConfig {
 
+    // Should be in .ENV file
     private static final String SECRET_KEY_BASE64 = "kUdoJf3P5eZ/sT/7MeQ7v5WJDA/lQ9dC0qM8P4L5eUM=";
     private final SecretKey secretKey;
 
@@ -28,15 +29,18 @@ public class JwtConfig {
 
     public String generateToken(String email, Collection<? extends GrantedAuthority> authorities) {
 
+        // Extract the roles from the authorities using Streams
+
         List<String> roles = authorities.stream()
                 .map(GrantedAuthority::getAuthority)
                 .collect(Collectors.toList());
 
+        // Generate the token with the email and roles and expiration time of 10 days
         return Jwts.builder()
                 .setSubject(email)
                 .claim("roles", roles)
                 .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 10))
+                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 24 * 10))
                 .signWith(secretKey, SignatureAlgorithm.HS256)
                 .compact();
     }

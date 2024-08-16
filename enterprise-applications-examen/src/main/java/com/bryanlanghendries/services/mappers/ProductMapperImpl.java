@@ -20,29 +20,19 @@ public class ProductMapperImpl implements ProductMapper{
         this.modelMapper = modelMapper;
     }
 
-    @PostConstruct
-    public void init(){ addProductEntityToProductDtoMapping(); }
-    @Override
-    public void addProductEntityToProductDtoMapping() {
-        final TypeMap<ProductEntity, ProductDto> typeMap = this.modelMapper.createTypeMap(ProductEntity.class, ProductDto.class);
-
-        typeMap.addMapping(ProductEntity::getId, ProductDto::setId);
-        typeMap.addMapping(ProductEntity::getName, ProductDto::setName);
-        typeMap.addMapping(ProductEntity::getCategory, ProductDto::setCategory);
-        typeMap.addMapping(ProductEntity::getPrice, ProductDto::setPrice);
-        typeMap.addMapping(ProductEntity::getDescription, ProductDto::setDescription);
-    }
-
+    // This method maps the ProductInput to the ProductEntity
     @Override
     public ProductEntity toProductEntity(ProductInput product) {
         return modelMapper.map(product, ProductEntity.class);
     }
 
+    // This method maps the ProductEntity to the ProductDto
     @Override
     public ProductEntity toProductEntity(ProductDto product) {
         return modelMapper.map(product, ProductEntity.class);
     }
 
+    // This method maps the ProductDto to the ProductEntity
     @Override
     public ProductDto toProductDto(ProductEntity product) { return modelMapper.map(product, ProductDto.class); }
 }

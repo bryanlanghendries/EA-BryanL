@@ -88,6 +88,7 @@ public class UserServiceImpl implements UserService {
         return mapper.toUserDto(getByIdOrThrowError(id));
     }
 
+    // returns UserDetails object for Spring Security
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         return userRepository.findByEmail(username)

@@ -1,6 +1,7 @@
 package com.bryanlanghendries.configuration;
 
 import com.bryanlanghendries.filters.JwtAuthenticationFilter;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -11,9 +12,6 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -25,23 +23,34 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @EnableWebSecurity
 public class SecurityConfig {
 
+    @Autowired
+    private JwtAuthenticationFilter jwtAuthenticationFilter;
+
+    // Configuring the security filter chain
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-
         return http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(HttpMethod.GET,"/products").hasAnyAuthority("ROLE_ADMIN", "ROLE_USER")
-                        .requestMatchers("/auth").permitAll()
+                        // Configuring the endpoints that require authentication
+                        .requestMatchers("/auth/**").permitAll()
+                        .requestMatchers(HttpMethod.GET,"/products/*").hasAnyAuthority("ROLE_ADMIN", "ROLE_USER")
+                        .requestMatchers(HttpMethod.POST,"/products").hasAuthority("ROLE_ADMIN")
+                        .requestMatchers(HttpMethod.PUT,"/products").hasAuthority("ROLE_ADMIN")
+                        .requestMatchers(HttpMethod.DELETE,"/products").hasAuthority("ROLE_ADMIN")
+                        .requestMatchers(HttpMethod.GET,"/users/*").hasAnyAuthority("ROLE_ADMIN", "ROLE_USER")
+                        .requestMatchers("/users/*").hasAuthority("ROLE_ADMIN")
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .addFilterBefore(new JwtAuthenticationFilter(new JwtConfig()), UsernamePasswordAuthenticationFilter.class)
+                // Adding the JWT filter before the UsernamePasswordAuthenticationFilter
+                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .httpBasic(Customizer.withDefaults())
                 .cors(Customizer.withDefaults())
                 .build();
     }
 
+    // Configuring CORS
     @Bean
     public WebMvcConfigurer corsConfigurer() {
         return new WebMvcConfigurer() {
@@ -55,6 +64,7 @@ public class SecurityConfig {
         };
     }
 
+    // Adding BCrypt password encoder
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();

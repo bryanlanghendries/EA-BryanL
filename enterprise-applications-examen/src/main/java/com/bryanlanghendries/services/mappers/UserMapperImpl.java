@@ -6,6 +6,7 @@ import org.modelmapper.TypeMap;
 import org.openapitools.model.UserDto;
 import org.openapitools.model.UserInput;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
@@ -20,32 +21,15 @@ public class UserMapperImpl implements UserMapper{
         this.modelMapper = modelMapper;
     }
 
-    @PostConstruct
-    public void init(){ addUserEntityToUserDtoMapping(); }
-
-    @Override
-    public void addUserEntityToUserDtoMapping() {
-        final TypeMap<UserEntity, UserDto> typeMap = this.modelMapper.createTypeMap(UserEntity.class, UserDto.class);
-
-        typeMap.addMapping(UserEntity::getId, UserDto::setId);
-        typeMap.addMapping(UserEntity::getFirstName, UserDto::setFirstName);
-        typeMap.addMapping(UserEntity::getLastName, UserDto::setLastName);
-        typeMap.addMapping(UserEntity::getEmail, UserDto::setEmail);
-        typeMap.addMapping(UserEntity::getPassword, UserDto::setPassword);
-    }
-
+    // This method maps the UserDto to the UserEntity
     @Override
     public UserEntity toUserEntity(UserDto user) {
         return modelMapper.map(user, UserEntity.class);
     }
 
+    // This method maps the UserEntity to the UserDto
     @Override
     public UserDto toUserDto(UserEntity user) {
         return modelMapper.map(user, UserDto.class);
-    }
-
-    @Override
-    public UserEntity toUserEntity(UserInput user) {
-        return modelMapper.map(user, UserEntity.class);
     }
 }

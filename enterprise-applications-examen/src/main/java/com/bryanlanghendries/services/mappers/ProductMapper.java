@@ -6,8 +6,6 @@ import org.openapitools.model.ProductInput;
 
 public interface ProductMapper {
 
-    void addProductEntityToProductDtoMapping();
-
     ProductDto toProductDto(ProductEntity product);
 
     ProductEntity toProductEntity(ProductDto product);

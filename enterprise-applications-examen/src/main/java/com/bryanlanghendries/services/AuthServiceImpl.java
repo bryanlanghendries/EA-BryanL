@@ -40,16 +40,21 @@ public class AuthServiceImpl implements AuthService {
                     new UsernamePasswordAuthenticationToken(
                             loginRequest.getEmail(),
                             loginRequest.getPassword()
-                    )
-            );
+                    ));
 
+
+            // Set the authentication object in the SecurityContext
             SecurityContextHolder.getContext().setAuthentication(authentication);
 
+            // Get the authorities from the authentication object
             Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
 
-            System.out.println("authorities = " + authorities);
 
-            return jwtConfig.generateToken(loginRequest.getEmail(), authorities);
+            String jwt = jwtConfig.generateToken(loginRequest.getEmail(), authorities);
+
+
+            // Generate a JWT token containing the email and authorities
+            return jwt;
         } catch (AuthenticationException e) {
             throw new RuntimeException("Invalid username or password", e);
         }
@@ -68,7 +73,7 @@ public class AuthServiceImpl implements AuthService {
                 userInput.getFirstName(),
                 userInput.getLastName(),
                 userInput.getEmail(),
-                passwordEncoder.encode(userInput.getPassword())
+                userInput.getPassword()
         );
 
         userService.addUser(newUser);
